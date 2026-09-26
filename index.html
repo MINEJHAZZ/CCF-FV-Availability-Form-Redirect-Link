@@ -5,12 +5,24 @@
     <title>Redirecting...</title>
     <script>
     async function doRedirect() {
+        try{
         const response = await fetch("https://docs.google.com/spreadsheets/d/1Azk-gkWGHCY55W99CxZU0jtfXDHQr4EtrctYRF0jXUg/gviz/tq?tqx=out:csv");
         const text = await response.text();
         const rows = text.split("\n");
         const a2 = rows[1].split(",")[0];
-        a2 = a2.replace(/^"|"$/g, ""); 
+        a2 = a2.replace(/^"|"$/g, "");
+        a2 = a2.trim(); // strip whitespace
+        console.log("Redirecting to:", a2); // debug 
+        //Force redirect without keeping history
+        window.location.replace(a2);
+        // Also update fallback link
+        document.getElementById("fallback").href = a2;
+        document.getElementById("fallback").innerText = a2;
+    } catch (err) {
+        console.error("Redirect failed:", err);
+    }
         window.location.href = a2.trim();
+        window.location.replace(a2); 
     } 
     doRedirect();
     </script>
@@ -18,5 +30,6 @@
 
 <body>
     <p>Redirecting…</p>
+     <p>If you are not redirected, <a id="fallback" href="#">click here</a>.</p>
 </body>
 </html>
